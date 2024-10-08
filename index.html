@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Searchable Cards with Read More</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      .navbar {
+        background-color: #333;
+        padding: 1rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+      }
+
+      .navbar .brand {
+        color: #fff;
+        font-size: 1.5rem;
+        text-decoration: none;
+      }
+
+      .search-container {
+        display: flex;
+        justify-content: center;
+        padding: 1rem;
+      }
+
+      .search-container input[type="text"] {
+        width: 100%;
+        max-width: 500px;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        transition: box-shadow 0.3s ease;
+      }
+
+      .search-container input[type="text"]:focus {
+        outline: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Default untuk tampilan PC (desktop) */
+      .cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 1rem;
+      }
+
+      /* Default tampilan kartu */
+      .card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin: 1rem;
+        padding: 1rem;
+        width: 250px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: transform 0.2s ease, max-height 0.4s ease;
+        overflow: hidden;
+      }
+
+      .card-description {
+        max-height: 60px; /* Batasi tinggi awal deskripsi */
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.4s ease;
+      }
+
+      .card.expanded .card-description {
+        max-height: 500px; /* Tinggi maksimal saat teks diperluas */
+        padding: 1rem 0;
+      }
+
+      @media (min-width: 1024px) {
+        .card {
+          width: 300px; /* Lebar lebih besar untuk PC */
+        }
+
+        .card-description {
+          max-height: 80px; /* Tinggi lebih pada deskripsi di tampilan PC */
+        }
+
+        .card.expanded .card-description {
+          max-height: none; /* Hapus batas tinggi pada deskripsi saat diperluas */
+        }
+      }
+
+      .card img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+      }
+
+      .card-title {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .card-description {
+        font-size: 0.9rem;
+        color: #555;
+        text-align: left;
+      }
+
+      .read-more {
+        color: #007bff;
+        cursor: pointer;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
+
+      .card:hover {
+        transform: scale(1.05);
+      }
+
+      #notFoundMessage {
+        display: none;
+        text-align: center;
+        font-size: 1.2rem;
+        color: #999;
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .cards {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .card {
+          width: 90%;
+          max-width: 350px;
+        }
+
+        .search-container input[type="text"] {
+          padding: 0.4rem 0.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="#" class="brand">Nama Website</a>
+    </nav>
+
+    <div class="search-container">
+      <input
+        type="text"
+        id="searchInput"
+        onkeyup="searchFunction()"
+        placeholder="Search..."
+      />
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <a href="p.html">
+          <img src="img/html.png" alt="Image One" />
+        </a>
+        <div class="card-title">Html</div>
+        <div
+          class="card-description"
+          data-full-text="HTML (HyperText Markup Language) adalah bahasa markah standar yang digunakan untuk membuat halaman web. HTML mendefinisikan struktur dan isi dari sebuah halaman web dengan menggunakan elemen-elemen seperti heading, paragraf, link, gambar, dan lainnya."
+        ></div>
+        <div class="read-more" onclick="toggleReadMore(this)">
+          Baca Selengkapnya
+        </div>
+      </div>
+      <div class="card">
+        <a href="h.html">
+          <img src="img/css.jpg" alt="Image Two" />
+        </a>
+        <div class="card-title">Css</div>
+        <div
+          class="card-description"
+          data-full-text="CSS (Cascading Style Sheets) adalah bahasa yang digunakan untuk mengatur tampilan dan tata letak elemen-elemen dalam halaman web yang dibuat dengan HTML. CSS memungkinkan pengembang web untuk mengontrol berbagai aspek visual seperti warna, ukuran, font, spasi, dan posisi elemen di halaman."
+        ></div>
+        <div class="read-more" onclick="toggleReadMore(this)">
+          Baca Selengkapnya
+        </div>
+      </div>
+      <div class="card">
+        <a href="t.html">
+          <img src="img/java.jpg" alt="Image Three" />
+        </a>
+        <div class="card-title">Java Script</div>
+        <div
+          class="card-description"
+          data-full-text="JavaScript adalah bahasa pemrograman yang digunakan untuk membuat halaman web yang interaktif dan dinamis. JavaScript dapat meningkatkan fungsionalitas pada halaman web. Bahkan dengan JavaScript ini kamu bisa membuat aplikasi, tools, atau bahkan game pada web."
+        ></div>
+        <div class="read-more" onclick="toggleReadMore(this)">
+          Baca Selengkapnya
+        </div>
+      </div>
+    </div>
+
+    <div id="notFoundMessage">No results found.</div>
+
+    <script>
+      function searchFunction() {
+        const input = document.getElementById("searchInput");
+        const filter = input.value.toLowerCase();
+        const cards = document.querySelectorAll(".card");
+        let found = false;
+
+        cards.forEach((card) => {
+          const title = card
+            .querySelector(".card-title")
+            .textContent.toLowerCase();
+          if (title.includes(filter)) {
+            card.style.display = "flex";
+            found = true;
+          } else {
+            card.style.display = "none";
+          }
+        });
+
+        const notFoundMessage = document.getElementById("notFoundMessage");
+
+        if (!found) {
+          notFoundMessage.style.display = "block";
+        } else {
+          notFoundMessage.style.display = "none";
+        }
+      }
+
+      function toggleReadMore(element) {
+        const card = element.closest(".card");
+        const description = card.querySelector(".card-description");
+        const fullText = description.getAttribute("data-full-text");
+        const isExpanded = card.classList.contains("expanded");
+
+        if (!isExpanded) {
+          description.textContent = fullText; // Tampilkan teks lengkap
+          element.textContent = "Tampilkan lebih sedikit"; // Ubah teks tombol
+          card.classList.add("expanded"); // Tambahkan class 'expanded'
+        } else {
+          const shortText =
+            fullText.slice(0, 38).split(" ").slice(0, -1).join(" ") + "...";
+          description.textContent = shortText;
+          element.textContent = "Baca Selengkapnya";
+          card.classList.remove("expanded"); // Hapus class 'expanded'
+        }
+      }
+
+      document.querySelectorAll(".card-description").forEach((description) => {
+        const fullText = description.getAttribute("data-full-text");
+        const shortText =
+          fullText.slice(0, 38).split(" ").slice(0, -1).join(" ") + "...";
+        description.textContent = shortText;
+      });
+    </script>
+  </body>
+</html>
